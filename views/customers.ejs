@@ -46,4 +46,32 @@
   </table>
 </form>
 
-<%- include("_footer") -%>
+<!-- Omitted Error Checking / Needs to be added -->
+<% if (type === "post") { %> <% if (result.result.length === 0) { %>
+<h3>No records found!</h3>
+<% } else { %>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>State</th>
+      <th>Sales YTD</th>
+      <th>Previous Years Sales</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% result.result.forEach(customer => { %>
+    <tr>
+      <td><%= customer.cusId %></td>
+      <td><%= customer.cusFname %></td>
+      <td><%= customer.cusLname %></td>
+      <td><%= customer.cusState %></td>
+      <td><%= customer.cusSalesYTD %></td>
+      <td><%= customer.cusSalesPrev %></td>
+    </tr>
+    <% }); %>
+  </tbody>
+</table>
+<% } %> <% } %> <%- include("_footer") -%>

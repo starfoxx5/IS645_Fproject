@@ -39,10 +39,48 @@ app.get("/", (req, res) => {
 app.get("/customers", async (req, res) => {
   // Omitted validation check
   const totRecs = await dblib.getTotalRecords();
+  //Create an empty product object (To populate form with values)
+  const cus = {
+    cusId: "",
+    cusFname: "",
+    cusLname: "",
+    cusState: "",
+    cusSalesYTD: "",
+    cusSalesPrev: "",
+  };
   res.render("customers", {
     type: "get",
     totRecs: totRecs.totRecords,
+    cus: cus,
   });
+});
+
+// Posts
+
+app.post("/customers", async (req, res) => {
+  // Omitted validation check
+  //  Can get this from the page rather than using another DB call.
+  //  Add it as a hidden form value.
+  const totRecs = await dblib.getTotalRecords();
+
+  dblib
+    .findCustomers(req.body)
+    .then((result) => {
+      res.render("customers", {
+        type: "post",
+        totRecs: totRecs.totRecords,
+        result: result,
+        prod: req.body,
+      });
+    })
+    .catch((err) => {
+      res.render("customers", {
+        type: "post",
+        totRecs: totRecs.totRecords,
+        result: `Unexpected Error: ${err.message}`,
+        prod: req.body,
+      });
+    });
 });
 
 // Test Insert

@@ -70,23 +70,33 @@ const findCustomers = (customer) => {
     sql += ` AND cusId = $${i}`;
     i++;
   }
-  if (customer.prod_name !== "") {
-    params.push(`${product.prod_name}%`);
-    sql += ` AND UPPER(prod_name) LIKE UPPER($${i})`;
+  if (customer.cusFname !== "") {
+    params.push(`${customer.cusFname}%`);
+    sql += ` AND UPPER(cusFname) LIKE UPPER($${i})`;
     i++;
   }
-  if (product.prod_desc !== "") {
-    params.push(`${product.prod_desc}%`);
-    sql += ` AND UPPER(prod_desc) LIKE UPPER($${i})`;
+  if (customer.cusLname !== "") {
+    params.push(`${customer.cusLname}%`);
+    sql += ` AND UPPER(cusLname) LIKE UPPER($${i})`;
     i++;
   }
-  if (product.prod_price !== "") {
-    params.push(parseFloat(product.prod_price));
-    sql += ` AND prod_price >= $${i}`;
+  if (customer.cusState !== "") {
+    params.push(`${customer.cusState}%`);
+    sql += ` AND UPPER(cusState) LIKE UPPER($${i})`;
+    i++;
+  }
+  if (customer.cusSalesYTD !== "") {
+    params.push(parseFloat(customer.cusSalesYTD));
+    sql += ` AND cusSalesYTD >= $${i}`;
+    i++;
+  }
+  if (customer.cusSalesPrev !== "") {
+    params.push(parseFloat(customer.cusSalesPrev));
+    sql += ` AND cusSalesPrev >= $${i}`;
     i++;
   }
 
-  sql += ` ORDER BY prod_id`;
+  sql += ` ORDER BY cusId`;
   // for debugging
   console.log("sql: " + sql);
   console.log("params: " + params);
@@ -110,4 +120,4 @@ const findCustomers = (customer) => {
 // Add this at the bottom
 module.exports.insertCustomer = insertCustomer;
 module.exports.getTotalRecords = getTotalRecords;
-module.exports.findProducts = findProducts;
+module.exports.findCustomers = findCustomers;
