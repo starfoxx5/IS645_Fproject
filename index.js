@@ -55,6 +55,30 @@ app.get("/customers", async (req, res) => {
   });
 });
 
+app.get("/create", async (req, res) => {
+  res.render("create", {
+    type: "get",
+  });
+});
+
+app.get("/delete/:id", async (req, res) => {
+  const cus = {
+    cusId: req.params.id,
+    cusFname: "",
+    cusLname: "",
+    cusState: "",
+    cusSalesYTD: "",
+    cusSalesPrev: "",
+  };
+  dblib.findCustomers(cus).then((result) => {
+    console.log(result);
+    res.render("delete", {
+      type: "get",
+      prod: result.result[0],
+    });
+  });
+});
+
 // Posts
 
 app.post("/customers", async (req, res) => {
@@ -81,6 +105,37 @@ app.post("/customers", async (req, res) => {
         prod: req.body,
       });
     });
+});
+
+app.post("/create", async (req, res) => {
+  dblib
+    .insertCustomer(req.body)
+    .then((result) => {
+      if (result.trans === "success") {
+        res.render("create", {
+          type: "post",
+          prod: req.body,
+          error: "false",
+        });
+      } else {
+        res.render("create", {
+          type: "post",
+          prod: req.body,
+          error: `Unexpected Error: ${result.msg}`,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.post("/delete", async (req, res) => {
+  dblib.
+  res.render("delete", {
+    type: "post",
+    prod: req.body,
+  });
 });
 
 // Test Insert

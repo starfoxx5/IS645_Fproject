@@ -6,41 +6,59 @@
 
 <!-- Not using bootstrap, just a simple form that you may enhance -->
 <form action="/customers" method="POST">
-  <table>
+  <table >
     <tr>
-      <td><label for="cusId">ID</label>:</td>
-      <td><input type="number" name="cusId" id="cusId" /></td>
+      <td><label for="cusId" class="mr-sm-9">ID</label>:</td>
+      <td>
+        <input type="number" name="cusId" id="cusId" class="form-control mb-10 mr-sm-9" <% if (type === "post") {
+        %> value="<%= prod.cusId %>" <% } %> />
+      </td>
       <td>(equals)</td>
     </tr>
     <tr>
-      <td><label for="cusFname">First Name</label>:</td>
-      <td><input type="text" name="cusFname" id="cusFname" /></td>
+      <td><label for="cusFname" class="mr-sm-9">First Name</label>:</td>
+      <td>
+        <input type="text" name="cusFname" id="cusFname" class="form-control mb-10 mr-sm-9"<% if (type === "post")
+        { %> value="<%= prod.cusFname %>" <% } %>/>
+      </td>
       <td>(begins with)</td>
     </tr>
     <tr>
-      <td><label for="cusLname">Last Name</label>:</td>
-      <td><input type="text" name="cusLname" id="cusLname" /></td>
+      <td><label for="cusLname" class="mr-sm-9">Last Name</label>:</td>
+      <td>
+        <input type="text" name="cusLname" id="cusLname" class="form-control mb-10 mr-sm-9"<% if (type === "post")
+        { %> value="<%= prod.cusLname %>" <% } %>/>
+      </td>
       <td>(begins with)</td>
     </tr>
     <tr>
-      <td><label for="cusState">State</label>:</td>
-      <td><input type="text" name="cusState" id="cusState" /></td>
+      <td><label for="cusState" class="mr-sm-9">State</label>:</td>
+      <td>
+        <input type="text" name="cusState" id="cusState" class="form-control mb-10 mr-sm-9"<% if (type === "post")
+        { %> value="<%= prod.cusState %>" <% } %> pattern="[A-Z]{2}" />
+      </td>
       <td>(equals)</td>
     </tr>
     <tr>
-      <td><label for="cusSalesYTD">Sales YTD</label>:</td>
-      <td><input type="text" name="cusSalesYTD" id="cusSalesYTD" /></td>
+      <td><label for="cusSalesYTD" class="mr-sm-9">Sales YTD</label>:</td>
+      <td>
+        <input type="number" name="cusSalesYTD" id="cusSalesYTD" class="form-control mb-10 mr-sm-9"<% if (type ===
+        "post") { %> value="<%= prod.cusSalesYTD %>" <% } %>/>
+      </td>
       <td>(greater than or equal)</td>
     </tr>
     <tr>
-      <td><label for="cusSalesPrev">Previous Years Sales</label>:</td>
-      <td><input type="text" name="cusSalesPrev" id="cusSalesPrev" /></td>
+      <td><label for="cusSalesPrev" class="mr-sm-9">Previous Years Sales</label>:</td>
+      <td>
+        <input type="number" name="cusSalesPrev" id="cusSalesPrev" class="form-control mb-10 mr-sm-9" <% if (type ===
+        "post") { %> value="<%= prod.cusSalesPrev %>" <% } %>/>
+      </td>
       <td>(greater than or equal)</td>
     </tr>
     <tr>
       <td span="2">
-        <input type="submit" value="Find" />
-        <input type="reset" value="Reset" />
+        <input type="submit" value="Find" class="btn btn-primary btn-sm mb-2"/>
+        <input type="reset" class="btn btn-primary btn-sm mb-2"/>
       </td>
     </tr>
   </table>
@@ -50,7 +68,7 @@
 <% if (type === "post") { %> <% if (result.result.length === 0) { %>
 <h3>No records found!</h3>
 <% } else { %>
-<table>
+<table class="table table-striped" >
   <thead>
     <tr>
       <th>ID</th>
@@ -59,17 +77,22 @@
       <th>State</th>
       <th>Sales YTD</th>
       <th>Previous Years Sales</th>
+      <th> <a class="btn btn-sm btn-success" href="/create">Create Customer</a></th>
     </tr>
   </thead>
   <tbody>
     <% result.result.forEach(customer => { %>
+
     <tr>
-      <td><%= customer.cusId %></td>
-      <td><%= customer.cusFname %></td>
-      <td><%= customer.cusLname %></td>
-      <td><%= customer.cusState %></td>
-      <td><%= customer.cusSalesYTD %></td>
-      <td><%= customer.cusSalesPrev %></td>
+      <td><%= customer.cusid %></td>
+      <td><%= customer.cusfname %></td>
+      <td><%= customer.cuslname %></td>
+      <td><%= customer.cusstate %></td>
+      <td><%= customer.cussalesytd %></td>
+      <td><%= customer.cussalesprev %></td>
+      <td class="d-print-none">
+        <a class="btn btn-sm btn-warning" href="/edit/<%= customer.cusid %>">Edit</a>
+        <a class="btn btn-sm btn-danger" href="/delete/<%= customer.cusid %>">Delete</a</td>
     </tr>
     <% }); %>
   </tbody>

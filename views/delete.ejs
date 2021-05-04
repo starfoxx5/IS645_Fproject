@@ -1,0 +1,90 @@
+<%- include("_header") -%>
+
+<h2>Are you sure you want to delete this Customer?</h2>
+
+<!-- Not using bootstrap, just a simple form that you may enhance -->
+<form action="/delete" method="POST">
+  <table>
+    <tr>
+      <td><label for="cusId">ID</label>:</td>
+      <td>
+        <input
+          type="number"
+          name="cusid"
+          id="cusId"
+          value="<%= prod.cusid %>"
+          disabled
+        />
+      </td>
+    </tr>
+    <tr>
+      <td><label for="cusFname">First Name</label>:</td>
+      <td>
+        <input
+          type="text"
+          name="cusfname"
+          id="cusFname"
+          value="<%= prod.cusfname %>"
+          disabled
+        />
+      </td>
+    </tr>
+    <tr>
+      <td><label for="cusLname">Last Name</label>:</td>
+      <td>
+        <input
+          type="text"
+          name="cuslname"
+          id="cusLname"
+          value="<%= prod.cuslname %>"
+          disabled
+        />
+      </td>
+    </tr>
+    <tr>
+      <td><label for="cusState">State</label>:</td>
+      <td>
+        <input
+          type="text"
+          name="cusstate"
+          id="cusState"
+          pattern="[A-Z]{2}"
+          value="<%= prod.cusstate %>"
+          disabled
+        />
+      </td>
+    </tr>
+    <tr>
+      <td><label for="cusSalesYTD">Sales YTD</label>:</td>
+      <td>
+        <input
+          type="number"
+          name="cussalesytd"
+          id="cusSalesYTD"
+          value="<%= prod.cussalesytd %>"
+          disabled
+        />
+      </td>
+    </tr>
+    <tr>
+      <td><label for="cusSalesPrev">Previous Years Sales</label>:</td>
+      <td>
+        <input
+          type="number"
+          name="cussalesprev"
+          id="cusSalesPrev"
+          value="<%= prod.cussalesprev %>"
+          disabled
+        />
+      </td>
+    </tr>
+    <tr>
+      <td span="2">
+        <input type="submit" value="Delete Customer" class="btn btn-danger" />
+      </td>
+    </tr>
+  </table>
+</form>
+<% if (type === "post") { %>
+<h3>Customer deleted successfully!</h3>
+<%} %> <%- include("_footer") -%>

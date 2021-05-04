@@ -117,6 +117,8 @@ const findCustomers = (customer) => {
     });
 };
 
+const deleteCustomer = (customerId) => {};
+
 // Add this at the bottom
 module.exports.insertCustomer = insertCustomer;
 module.exports.getTotalRecords = getTotalRecords;

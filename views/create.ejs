@@ -1,0 +1,66 @@
+<%- include("_header") -%>
+
+<h2>Create New Customer</h2>
+
+<!-- Not using bootstrap, just a simple form that you may enhance -->
+<form action="/create" method="POST">
+  <table>
+    <tr>
+      <td><label for="cusId">ID</label>:</td>
+      <td>
+        <input type="number" name="cusId" id="cusId" required <% if (type ===
+        "post") { %> value="<%= prod.cusId %>" <% } %> />
+      </td>
+      <td>(required)</td>
+    </tr>
+    <tr>
+      <td><label for="cusFname">First Name</label>:</td>
+      <td>
+        <input type="text" name="cusFname" id="cusFname" required <% if (type
+        === "post") { %> value="<%= prod.cusFname %>" <% } %>/>
+      </td>
+      <td>(required)</td>
+    </tr>
+    <tr>
+      <td><label for="cusLname">Last Name</label>:</td>
+      <td>
+        <input type="text" name="cusLname" id="cusLname" required <% if (type
+        === "post") { %> value="<%= prod.cusLname %>" <% } %>/>
+      </td>
+      <td>(required)</td>
+    </tr>
+    <tr>
+      <td><label for="cusState">State</label>:</td>
+      <td>
+        <input type="text" name="cusState" id="cusState" pattern="[A-Z]{2}" <%
+        if (type === "post") { %> value="<%= prod.cusState %>" <% } %> />
+      </td>
+    </tr>
+    <tr>
+      <td><label for="cusSalesYTD">Sales YTD</label>:</td>
+      <td>
+        <input type="number" name="cusSalesYTD" id="cusSalesYTD" <% if (type ===
+        "post") { %> value="<%= prod.cusSalesYTD %>" <% } %>/>
+      </td>
+    </tr>
+    <tr>
+      <td><label for="cusSalesPrev">Previous Years Sales</label>:</td>
+      <td>
+        <input type="number" name="cusSalesPrev" id="cusSalesPrev" <% if (type
+        === "post") { %> value="<%= prod.cusSalesPrev %>" <% } %>/>
+      </td>
+    </tr>
+    <tr>
+      <td span="2">
+        <input type="submit" value="Create" class="btn btn-primary btn-sm" />
+        <input type="reset" class="btn btn-primary btn-sm" />
+      </td>
+    </tr>
+  </table>
+</form>
+<% if (type === "post") { %> <% if (error === "false") { %>
+<h3>New Customer Created!</h3>
+<% } else { %>
+<h3>Error Creating New Customer</h3>
+<p><%= error %></p>
+<%} %> <%} %> <%- include("_footer") -%>
