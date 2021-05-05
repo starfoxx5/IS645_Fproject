@@ -5,9 +5,9 @@
 <h4>Total number of records in the database: <%= totRecs %></h4>
 
 <!-- Not using bootstrap, just a simple form that you may enhance -->
-<form action="/customers" method="POST">
+<form action="/customers" method="POST" >
   <table >
-    <tr>
+    <tr >
       <td><label for="cusId" class="mr-sm-9">ID</label>:</td>
       <td>
         <input type="number" name="cusId" id="cusId" class="form-control mb-10 mr-sm-9" <% if (type === "post") {
@@ -15,7 +15,7 @@
       </td>
       <td>(equals)</td>
     </tr>
-    <tr>
+    <tr class="form-group mb-5">
       <td><label for="cusFname" class="mr-sm-9">First Name</label>:</td>
       <td>
         <input type="text" name="cusFname" id="cusFname" class="form-control mb-10 mr-sm-9"<% if (type === "post")
@@ -91,7 +91,7 @@
       <td><%= customer.cussalesytd %></td>
       <td><%= customer.cussalesprev %></td>
       <td class="d-print-none">
-        <a class="btn btn-sm btn-warning" href="/edit/<%= customer.cusid %>">Edit</a>
+        <a class="btn btn-sm btn-warning" href="/update/<%= customer.cusid %>">Edit</a>
         <a class="btn btn-sm btn-danger" href="/delete/<%= customer.cusid %>">Delete</a</td>
     </tr>
     <% }); %>
