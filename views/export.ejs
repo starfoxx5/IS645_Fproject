@@ -1,0 +1,25 @@
+<%- include("_header") -%>
+
+<h3>Customer Export</h3>
+<h5>Enter a file name and click "Export Customers"</h5>
+<form action="/export" method="post">
+  <table>
+ 
+  <div class="form-group row">
+    <label for="inputFileName" class="col-sm-2 col-form-label">File Name</label>
+    <div class="col-sm-2">
+      <input type="text" class="form-control" id="inputFileName" placeholder="export.txt">
+    </div>
+    <tr><td>
+    <input
+    type="submit"
+    id="submit"
+    value="Export Customers"
+    class="btn btn-primary btn-sm"
+  /></td></tr>
+</table>
+</form>
+<% if(message.substring(0,5) === "Error") { %>
+<h2>Error!</h2>
+<p><%= message %></p>
+<% } %> <%- include("_footer") -%>

@@ -79,6 +79,35 @@ app.get("/delete/:id", async (req, res) => {
   });
 });
 
+app.get("/update/:id", async (req, res) => {
+  const cus = {
+    cusId: req.params.id,
+    cusFname: "",
+    cusLname: "",
+    cusState: "",
+    cusSalesYTD: "",
+    cusSalesPrev: "",
+  };
+  dblib.findCustomers(cus).then((result) => {
+    console.log(result);
+    res.render("update", {
+      type: "get",
+      prod: result.result[0],
+    });
+  });
+});
+
+app.get("/import", (req, res) => {
+  res.render("import", {
+    type: "get",
+  });
+});
+
+app.get("/export", (req, res) => {
+  var message = "";
+  res.render("export", { message: message });
+});
+
 // Posts
 
 app.post("/customers", async (req, res) => {
@@ -131,10 +160,88 @@ app.post("/create", async (req, res) => {
 });
 
 app.post("/delete", async (req, res) => {
-  dblib.
-  res.render("delete", {
+  dblib.res.render("delete", {
     type: "post",
     prod: req.body,
+  });
+});
+
+// // POST /delete/5
+// app.post("/delete/:id", (req, res) => {
+//   const id = req.params.id;
+//   const sql = "DELETE FROM customer WHERE cusId = $1";
+//   pool.query(sql, [id], (err, result) => {
+//     // if (err) ...
+//     res.redirect("/customers");
+//   });
+// });
+
+app.post("/update", async (req, res) => {
+  dblib
+    .insertCustomer(req.body)
+    .then((result) => {
+      if (result.trans === "success") {
+        res.render("create", {
+          type: "post",
+          prod: req.body,
+          error: "false",
+        });
+      } else {
+        res.render("create", {
+          type: "post",
+          prod: req.body,
+          error: `Unexpected Error: ${result.msg}`,
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
+app.post("/input", upload.single("filename"), (req, res) => {
+  if (!req.file || Object.keys(req.file).length === 0) {
+    message = "Error: Import file not uploaded";
+    return res.send(message);
+  }
+  //Read file line by line, inserting records
+  const buffer = req.file.buffer;
+  const lines = buffer.toString().split(/\r?\n/);
+
+  lines.forEach((line) => {
+    //console.log(line);
+    product = line.split(",");
+    //console.log(product);
+    const sql = `INSERT INTO customer (cusId, cusFname, cusLname, cusState, cusSalesYTD, cusSalesPrev)
+       VALUES ($1, $2, $3, $4, $5, $6)`;
+    pool.query(sql, product, (err, result) => {
+      if (err) {
+        console.log(`Insert Error.  Error message: ${err.message}`);
+      } else {
+        console.log(`Inserted successfully`);
+      }
+    });
+  });
+  message = `Processing Complete - Processed ${lines.length} records`;
+  res.send(message);
+});
+
+app.post("/export", (req, res) => {
+  const sql = "SELECT * FROM customer ORDER BY cusId";
+  pool.query(sql, [], (err, result) => {
+    var message = "";
+    if (err) {
+      message = `Error - ${err.message}`;
+      res.render("export", { message: message });
+    } else {
+      var output = "";
+      result.rows.forEach((customer) => {
+        output += `${customer.cusId},${customer.cusFname},${customer.cusLname},${customer.cusState},${customer.cusSalesYTD},${customer.cusSalesYTD}\r\n`;
+      });
+      res.header("Content-Type", "text/csv");
+      res.attachment("export.csv");
+      return res.send(output);
+    }
   });
 });
 
