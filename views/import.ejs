@@ -7,8 +7,14 @@
 <br />
 
 <h4>Select a file with customers for Database insert</h4>
-<form>
-  <input type="file" name="filename" required class="btn btn-sm" />
+<form enctype="multipart/form-data">
+  <input
+    type="file"
+    id="cusImport"
+    name="filename"
+    required
+    class="btn btn-sm"
+  />
   <p></p>
   <input
     type="submit"
@@ -25,15 +31,24 @@
   document.querySelector("form").addEventListener("submit", (e) => {
     // Cancel default behavior of sending a synchronous POST request
     e.preventDefault();
+    const formData = {
+      filename: document.getElementById("cusImport").value,
+    };
     // Create a FormData object, passing the form as a parameter
-    const formData = new FormData(e.target);
+    // const formData = new FormData(e.target);
     // Send form data to the server with an asynchronous POST request
-    fetch("/import", {
+    debugger;
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    fetch("/input", {
       method: "POST",
+      headers,
       body: formData,
     })
       .then((response) => response.text())
       .then((data) => {
+        debugger;
         const resultElement = document.getElementById("result");
         if (data.substring(0, 5) === "Error") {
           resultElement.innerText = `Error occurred!  ${data}`;

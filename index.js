@@ -4,7 +4,9 @@ const app = express();
 const dblib = require("./dblib.js");
 
 const multer = require("multer");
-const upload = multer();
+const upload = multer({
+  dest: "../uploads",
+});
 
 // Add middleware to parse default urlencoded form
 app.use(express.urlencoded({ extended: false }));
@@ -137,7 +139,7 @@ app.post("/customers", async (req, res) => {
 });
 
 app.post("/create", async (req, res) => {
-   dblib
+  dblib
     .insertCustomer(req.body)
     .then((result) => {
       if (result.trans === "success") {
@@ -202,8 +204,11 @@ app.post("/update", async (req, res) => {
 });
 
 app.post("/input", upload.single("filename"), (req, res) => {
-  if (!req.file || Object.keys(req.file).length === 0) {
-    message = "Error: Import file not uploaded";
+  console.log(req.file, req.body);
+
+  if (!req.file) {
+    //  if (!req.file || Object.keys(req.file).length === 0) {
+    message = `Error: Import file not uploaded ${req.file}`;
     return res.send(message);
   }
   //Read file line by line, inserting records
