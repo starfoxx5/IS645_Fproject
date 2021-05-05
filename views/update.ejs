@@ -3,7 +3,7 @@
 <h2>Customer Update</h2>
 
 <!-- Not using bootstrap, just a simple form that you may enhance -->
-<form action="/update/<%= model.cusid %>" method="POST">
+<form action="/update" method="POST">
   <table>
     <tr>
       <td><label for="cusId">ID</label>:</td>
@@ -12,8 +12,7 @@
           type="number"
           name="cusid"
           id="cusId"
-          value="<%= prod.cusid %>"
-          disabled
+          value="<%= prod.cusId %>"
         />
       </td>
     </tr>
@@ -24,8 +23,7 @@
           type="text"
           name="cusfname"
           id="cusFname"
-          value="<%= prod.cusfname %>"
-          disabled
+          value="<%= prod.cusFname %>"
         />
       </td>
     </tr>
@@ -36,8 +34,7 @@
           type="text"
           name="cuslname"
           id="cusLname"
-          value="<%= prod.cuslname %>"
-          disabled
+          value="<%= prod.cusLname %>"
         />
       </td>
     </tr>
@@ -49,8 +46,7 @@
           name="cusstate"
           id="cusState"
           pattern="[A-Z]{2}"
-          value="<%= prod.cusstate %>"
-          disabled
+          value="<%= prod.cusState %>"
         />
       </td>
     </tr>
@@ -61,8 +57,7 @@
           type="number"
           name="cussalesytd"
           id="cusSalesYTD"
-          value="<%= prod.cussalesytd %>"
-          disabled
+          value="<%= prod.cusSalesYTD %>"
         />
       </td>
     </tr>
@@ -73,8 +68,7 @@
           type="number"
           name="cussalesprev"
           id="cusSalesPrev"
-          value="<%= prod.cussalesprev %>"
-          disabled
+          value="<%= prod.cusSalesPrev %>"
         />
       </td>
     </tr>

@@ -117,9 +117,27 @@ const findCustomers = (customer) => {
     });
 };
 
-const deleteCustomer = (customerId) => {};
+const deleteCustomer = (customerId) => {
+  console.log(customerId);
+  const sql = "DELETE FROM customer WHERE cusId = $1";
+  return pool
+    .query(sql, [customerId])
+    .then((result) => {
+      return {
+        trans: "success",
+        result: result,
+      };
+    })
+    .catch((err) => {
+      return {
+        trans: "Error",
+        result: `Error: ${err.message}`,
+      };
+    });
+};
 
 // Add this at the bottom
 module.exports.insertCustomer = insertCustomer;
 module.exports.getTotalRecords = getTotalRecords;
 module.exports.findCustomers = findCustomers;
+module.exports.deleteCustomer = deleteCustomer;

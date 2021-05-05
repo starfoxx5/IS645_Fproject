@@ -137,7 +137,7 @@ app.post("/customers", async (req, res) => {
 });
 
 app.post("/create", async (req, res) => {
-  dblib
+   dblib
     .insertCustomer(req.body)
     .then((result) => {
       if (result.trans === "success") {
@@ -160,34 +160,36 @@ app.post("/create", async (req, res) => {
 });
 
 app.post("/delete", async (req, res) => {
-  dblib.res.render("delete", {
-    type: "post",
-    prod: req.body,
+  console.log(req.body);
+  dblib.deleteCustomer(req.body.cusid).then((result) => {
+    if (result.trans === "success") {
+      res.render("delete", {
+        type: "post",
+        prod: req.body,
+        error: "false",
+      });
+    } else {
+      res.render("update", {
+        type: "post",
+        prod: req.body,
+        error: `Unexpected Error: ${result.msg}`,
+      });
+    }
   });
 });
-
-// // POST /delete/5
-// app.post("/delete/:id", (req, res) => {
-//   const id = req.params.id;
-//   const sql = "DELETE FROM customer WHERE cusId = $1";
-//   pool.query(sql, [id], (err, result) => {
-//     // if (err) ...
-//     res.redirect("/customers");
-//   });
-// });
 
 app.post("/update", async (req, res) => {
   dblib
     .insertCustomer(req.body)
     .then((result) => {
       if (result.trans === "success") {
-        res.render("create", {
+        res.render("update", {
           type: "post",
           prod: req.body,
           error: "false",
         });
       } else {
-        res.render("create", {
+        res.render("update", {
           type: "post",
           prod: req.body,
           error: `Unexpected Error: ${result.msg}`,
