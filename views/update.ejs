@@ -12,7 +12,7 @@
           type="number"
           name="cusid"
           id="cusId"
-          value="<%= prod.cusId %>"
+          value="<%= prod.cusid %>"
         />
       </td>
     </tr>
@@ -23,7 +23,7 @@
           type="text"
           name="cusfname"
           id="cusFname"
-          value="<%= prod.cusFname %>"
+          value="<%= prod.cusfname %>"
         />
       </td>
     </tr>
@@ -34,7 +34,7 @@
           type="text"
           name="cuslname"
           id="cusLname"
-          value="<%= prod.cusLname %>"
+          value="<%= prod.cuslname %>"
         />
       </td>
     </tr>
@@ -46,7 +46,7 @@
           name="cusstate"
           id="cusState"
           pattern="[A-Z]{2}"
-          value="<%= prod.cusState %>"
+          value="<%= prod.cusstate %>"
         />
       </td>
     </tr>
@@ -57,7 +57,7 @@
           type="number"
           name="cussalesytd"
           id="cusSalesYTD"
-          value="<%= prod.cusSalesYTD %>"
+          value="<%= prod.cussalesytd %>"
         />
       </td>
     </tr>
@@ -68,7 +68,7 @@
           type="number"
           name="cussalesprev"
           id="cusSalesPrev"
-          value="<%= prod.cusSalesPrev %>"
+          value="<%= prod.cussalesprev %>"
         />
       </td>
     </tr>
@@ -81,4 +81,4 @@
 </form>
 <% if (type === "post") { %> <% if (error === "false") { %>
 <h3>Customer Updated Successfully!</h3>
-<%} %> <%- include("_footer") -%>
+<%} %><%} %> <%- include("_footer") -%>

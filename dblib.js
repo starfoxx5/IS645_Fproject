@@ -136,8 +136,56 @@ const deleteCustomer = (customerId) => {
     });
 };
 
+const updateCustomer = (customer) => {
+  console.log(customer);
+  const sql =
+    "UPDATE customer SET cusFname=$2, cusLname=$3, cusState=$4, cusSalesYTD=$5, cusSalesPrev=$6 WHERE cusId = $1";
+  return pool
+    .query(sql, [
+      customer.cusid,
+      customer.cusfname,
+      customer.cuslname,
+      customer.cusstate,
+      customer.cussalesytd,
+      customer.cussalesprev,
+    ])
+    .then((result) => {
+      console.log(1);
+      return {
+        trans: "success",
+        result: result,
+      };
+    })
+    .catch((err) => {
+      console.log(2);
+      return {
+        trans: "Error",
+        result: `Error: ${err.message}`,
+      };
+    });
+};
+
+const exportFile = async () => {
+  const sql = "SELECT * FROM customer ORDER BY cusId";
+  let result = await pool.query(sql, []);
+  let headers = await pool.query(
+    "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'customer'"
+  );
+  console.log(headers.rows);
+  let headerRow = headers.rows.reduce((accumulator, current) => {
+    return accumulator + current.column_name + ",";
+  }, "");
+  var output = headerRow + "\r\n";
+  result.rows.forEach((customer) => {
+    output += `${customer.cusid},${customer.cusfname},${customer.cuslname},${customer.cusstate},"${customer.cussalesytd}","${customer.cussalesprev}"\r\n`;
+  });
+  return output;
+};
+
 // Add this at the bottom
 module.exports.insertCustomer = insertCustomer;
 module.exports.getTotalRecords = getTotalRecords;
 module.exports.findCustomers = findCustomers;
 module.exports.deleteCustomer = deleteCustomer;
+module.exports.updateCustomer = updateCustomer;
+module.exports.exportFile = exportFile;

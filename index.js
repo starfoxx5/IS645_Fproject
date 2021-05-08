@@ -4,12 +4,11 @@ const app = express();
 const dblib = require("./dblib.js");
 
 const multer = require("multer");
-const upload = multer({
-  dest: "../uploads",
-});
+const upload = multer();
 
 // Add middleware to parse default urlencoded form
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Setup EJS
 app.set("view engine", "ejs");
@@ -99,15 +98,17 @@ app.get("/update/:id", async (req, res) => {
   });
 });
 
-app.get("/import", (req, res) => {
+app.get("/import", async (req, res) => {
+  const totRecs = await dblib.getTotalRecords();
   res.render("import", {
     type: "get",
+    totRecs: totRecs.totRecords,
   });
 });
 
 app.get("/export", (req, res) => {
   var message = "";
-  res.render("export", { message: message });
+  res.render("export", { message: message, type: "get" });
 });
 
 // Posts
@@ -182,7 +183,7 @@ app.post("/delete", async (req, res) => {
 
 app.post("/update", async (req, res) => {
   dblib
-    .insertCustomer(req.body)
+    .updateCustomer(req.body)
     .then((result) => {
       if (result.trans === "success") {
         res.render("update", {
@@ -203,53 +204,57 @@ app.post("/update", async (req, res) => {
     });
 });
 
-app.post("/input", upload.single("filename"), (req, res) => {
+app.post("/import", upload.single("filename"), async (req, res) => {
+  console.log("hi");
   console.log(req.file, req.body);
 
   if (!req.file) {
     //  if (!req.file || Object.keys(req.file).length === 0) {
     message = `Error: Import file not uploaded ${req.file}`;
-    return res.send(message);
+    return res.json({
+      message: message,
+    });
   }
   //Read file line by line, inserting records
   const buffer = req.file.buffer;
   const lines = buffer.toString().split(/\r?\n/);
 
-  lines.forEach((line) => {
-    //console.log(line);
+  var numFailed = 0;
+  var numInserted = 0;
+  var errorMessage = [];
+
+  // lines.forEach(async (line) => {
+  for (let line of lines) {
     product = line.split(",");
     //console.log(product);
-    const sql = `INSERT INTO customer (cusId, cusFname, cusLname, cusState, cusSalesYTD, cusSalesPrev)
-       VALUES ($1, $2, $3, $4, $5, $6)`;
-    pool.query(sql, product, (err, result) => {
-      if (err) {
-        console.log(`Insert Error.  Error message: ${err.message}`);
-      } else {
-        console.log(`Inserted successfully`);
-      }
-    });
+    let result = await dblib.insertCustomer(product);
+    if (result.trans === "success") {
+      numInserted++;
+    } else {
+      console.log(result);
+      numFailed++;
+      // errorMessage += `${result.msg} \r\n`;
+      errorMessage.push(result.msg);
+    }
+  }
+  // });
+  //index.js establishes the data for the routes
+  //dblib establishes the logic for the database
+  const totRecs = await dblib.getTotalRecords();
+  res.json({
+    type: "post",
+    numFailed: numFailed,
+    numInserted: numInserted,
+    errorMessage: errorMessage,
+    totRecs: totRecs.totRecords,
   });
-  message = `Processing Complete - Processed ${lines.length} records`;
-  res.send(message);
 });
 
-app.post("/export", (req, res) => {
-  const sql = "SELECT * FROM customer ORDER BY cusId";
-  pool.query(sql, [], (err, result) => {
-    var message = "";
-    if (err) {
-      message = `Error - ${err.message}`;
-      res.render("export", { message: message });
-    } else {
-      var output = "";
-      result.rows.forEach((customer) => {
-        output += `${customer.cusId},${customer.cusFname},${customer.cusLname},${customer.cusState},${customer.cusSalesYTD},${customer.cusSalesYTD}\r\n`;
-      });
-      res.header("Content-Type", "text/csv");
-      res.attachment("export.csv");
-      return res.send(output);
-    }
-  });
+app.post("/export", async (req, res) => {
+  let output = await dblib.exportFile();
+  res.header("Content-Type", "text/csv");
+  res.attachment("export.csv");
+  return res.send(output);
 });
 
 // Test Insert

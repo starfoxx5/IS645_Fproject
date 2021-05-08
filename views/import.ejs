@@ -3,11 +3,11 @@
 <h1>Customer Import</h1>
 <br />
 
-<h4>Total number of records in the database:</h4>
+<h4>Total number of records in the database: <%= totRecs %></h4>
 <br />
 
 <h4>Select a file with customers for Database insert</h4>
-<form enctype="multipart/form-data">
+<form enctype="multipart/form-data" action="./import" method="POST">
   <input
     type="file"
     id="cusImport"
@@ -22,8 +22,27 @@
     class="btn btn-primary btn-sm"
   />
 </form>
-<p id="result"></p>
-
+<h2 id="waiting" style="display: none">Waiting for Results</h2>
+<div id="result" style="display: none">
+  <h2>Import Summary</h2>
+  <p><b> Records Processed:</b> <span id="recordsProcessed"></span></p>
+  <p>Records Inserted Successfully: <span id="recordsInserted"></span></p>
+  <p>Records Not Inserted: <span id="recordsFailed"></span></p>
+  <p>Errors:</p>
+  <p id="errorList"></p>
+</div>
+<script>
+  document.querySelector("form").addEventListener("submit", (e) => {
+    // Cancel default behavior of sending a synchronous POST request
+    e.preventDefault();
+    document.getElementById("waiting").style.display = "";
+    // const formData = {
+    //   filename: document.getElementById("cusImport").value,
+    // };
+    const formData = new FormData(e.target);
+    console.log(formData.get("filename"));
+  });
+</script>
 <script>
   // Typically, if the script is large, we place it in a separate file
   //   For demonstrations, it is included in the same file.
@@ -31,35 +50,37 @@
   document.querySelector("form").addEventListener("submit", (e) => {
     // Cancel default behavior of sending a synchronous POST request
     e.preventDefault();
-    const formData = {
-      filename: document.getElementById("cusImport").value,
-    };
+    document.getElementById("waiting").style.display = "";
+    // const formData = {
+    //   filename: document.getElementById("cusImport").value,
+    // };
+
     // Create a FormData object, passing the form as a parameter
-    // const formData = new FormData(e.target);
+    const formData = new FormData(e.target);
+
     // Send form data to the server with an asynchronous POST request
-    debugger;
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    fetch("/input", {
+
+    fetch("/import", {
       method: "POST",
-      headers,
+      // don't use GET
       body: formData,
     })
-      .then((response) => response.text())
+      .then((response) => response.json())
+      // .then(console.log);
       .then((data) => {
-        debugger;
-        const resultElement = document.getElementById("result");
-        if (data.substring(0, 5) === "Error") {
-          resultElement.innerText = `Error occurred!  ${data}`;
-        } else {
-          resultElement.innerText = data;
+        document.getElementById("waiting").style.display = "none";
+        document.getElementById("result").style.display = "";
+        document.getElementById("recordsProcessed").textContent =
+          data.numInserted + data.numFailed;
+        document.getElementById("recordsInserted").textContent =
+          data.numInserted;
+        document.getElementById("recordsFailed").textContent = data.numFailed;
+        let errorList = document.getElementById("errorList");
+        for (let error of data.errorMessage) {
+          let newError = document.createElement("p");
+          newError.textContent = error;
+          errorList.appendChild(newError);
         }
-      })
-      .catch((err) => {
-        document.getElementById(
-          "message"
-        ).textContent = `Error: ${err.message}`;
       });
   });
 </script>
